@@ -9,6 +9,7 @@ lerna-debug.log*
 
 node_modules
 .qodo/
+.vercel/
 dist
 dist-ssr
 .output

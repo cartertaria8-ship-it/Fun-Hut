@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import tailwindcss from "@tailwindcss/vite";
+import { nitro } from "nitro/vite";
 
 function offlinePrecache(): Plugin {
   return {
@@ -10,7 +11,7 @@ function offlinePrecache(): Plugin {
     apply: "build",
     generateBundle(options, bundle) {
       const outputDir = options.dir?.replace(/\\/g, "/");
-      if (!outputDir?.endsWith("/client")) return;
+      if (!outputDir || !["/client", "/static"].some((suffix) => outputDir.endsWith(suffix))) return;
 
       const assets = Object.keys(bundle)
         .filter((fileName) => /\.(js|css|woff2?|ttf|svg|png|jpe?g|webp)$/.test(fileName))
@@ -22,7 +23,7 @@ function offlinePrecache(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [tailwindcss(), offlinePrecache(), tsconfigPaths(), tanstackStart(), react()],
+  plugins: [tailwindcss(), offlinePrecache(), tsconfigPaths(), tanstackStart(), nitro(), react()],
   server: {
     port: 3000,
   },
